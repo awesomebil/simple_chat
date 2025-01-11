@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
     int port = stoi(argv[1]);
     char buffer[256];
 
@@ -25,11 +25,11 @@ int main(int argc, char* argv[]) {
         cerr << "errno: " << errno << endl;
     }
 
-    struct sockaddr_in bind_address;
+    struct sockaddr_in6 bind_address;
 
-    bind_address.sin_addr.s_addr = inet_addr(argv[2]);
-    bind_address.sin_port = htons(port);
-    bind_address.sin_family = AF_INET;
+    inet_pton(AF_INET6, argv[2], &bind_address.sin6_addr);
+    bind_address.sin6_port = htons(port);
+    bind_address.sin6_family = AF_INET6;
 
     cout << "Attempting to connect to " << argv[2] << " on port number " << argv[1] << endl;
 

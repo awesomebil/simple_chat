@@ -50,8 +50,7 @@ class message_server {
 int main(int argc, char* argv[]) {
     
     
-    
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0); // Returns file descriptor, 1.
+    int sockfd = socket(AF_INET6, SOCK_STREAM, 0); // Returns file descriptor, 1.
     int port = stoi(argv[1]);
     socklen_t client_len = 0;
 
@@ -67,17 +66,17 @@ int main(int argc, char* argv[]) {
     }
     
 
-    struct sockaddr_in bind_address, client_addr;
+    struct sockaddr_in6 bind_address, client_addr;
 
-    bind_address.sin_addr.s_addr = inet_addr(argv[2]);
-    bind_address.sin_port = htons(port);
-    bind_address.sin_family = AF_INET;
+    inet_pton(AF_INET6, argv[2], &bind_address.sin6_addr);
+    bind_address.sin6_port = htons(port);
+    bind_address.sin6_family = AF_INET6;
 
 
     if (bind(sockfd, (struct sockaddr*) &bind_address, sizeof(bind_address)) < 0) { // 2.
         cerr << "bind failed..." << endl;
         cerr << "Error: " << strerror(errno) << endl;
-        cerr << "Bind address: " << bind_address.sin_addr.s_addr << " on port: " << bind_address.sin_port << endl; 
+        cerr << "Bind address: " << argv[2] << " on port: " << argv[1] << endl; 
     }
 
     if(listen(sockfd, 5) < 0) { // 3.
