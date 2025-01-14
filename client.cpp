@@ -19,7 +19,7 @@ using namespace std;
 
 // Make a hello world client socket programming implementation here.
 
-void read_from_network(int newsockfd, char* buffer) {
+int read_from_network(int newsockfd, char* buffer) {
     int n = read(newsockfd, buffer, 255); // 4.
 
     cout << buffer << endl;
@@ -29,6 +29,8 @@ void read_from_network(int newsockfd, char* buffer) {
     cout << "Number of bytes read: " << n << endl;
 
     cout << "Message content: \t" << buffer << endl << endl;
+
+    return n;
 }
 
 void write_to_network(int newsockfd, char* buffer) {
@@ -84,10 +86,10 @@ int main(int argc, char* argv[]) {
     fds[POLLSTD_OUT].events = POLLOUT;
 
     fds[NETFD_IN].fd = sockfd;
-    fds[NETFD_IN].events = POLLIN;
+    fds[NETFD_IN].events = POLLIN | POLLHUP;
 
     fds[NETFD_OUT].fd = sockfd;
-    fds[NETFD_OUT].events = POLLOUT;
+    fds[NETFD_OUT].events = POLLOUT | POLLHUP;
 
     while(1) {
         if (fds[POLLSTD_IN].fd == -1 || fds[NETFD_IN].fd == -1)
@@ -108,7 +110,6 @@ int main(int argc, char* argv[]) {
                 fds[i].fd = -1;
             } 
         }
-        
 
         if(fds[POLLSTD_IN].revents & POLLIN) {
             fgets(buffer, 256, stdin);
@@ -116,7 +117,11 @@ int main(int argc, char* argv[]) {
         }
 
         if(fds[NETFD_IN].revents & POLLIN) {
-            read_from_network(sockfd, buffer);
+            int n = read_from_network(sockfd, buffer);
+            if (n == 0) {
+                cout << "Connection terminated..." << endl;
+                break;
+            }
         }
         
     }

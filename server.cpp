@@ -55,7 +55,7 @@ class message_server {
 // 3. Initiate a listen call in order to receive responses.
 // 4. Accept a connection and exchange data.
 
-void read_from_network(int newsockfd, char* buffer) {
+int read_from_network(int newsockfd, char* buffer) {
     int n = read(newsockfd, buffer, 255); // 4.
 
     cout << buffer << endl;
@@ -65,6 +65,8 @@ void read_from_network(int newsockfd, char* buffer) {
     cout << "Number of bytes read: " << n << endl;
 
     cout << "Message content: \t" << buffer << endl << endl;
+
+    return n;
 }
 
 void write_to_network(int newsockfd, char* buffer) {
@@ -155,7 +157,7 @@ int main(int argc, char* argv[]) {
         }
 
         for(int i = 0; i < 4; ++i) {
-            if (fds[i].revents & (POLLERR | POLLNVAL | POLLHUP))
+            if (fds[i].revents & (POLLERR | POLLNVAL))
             {
                 fds[i].fd = -1;
             } 
@@ -167,9 +169,14 @@ int main(int argc, char* argv[]) {
         }
 
         if(fds[NETFD_IN].revents & POLLIN) {
-            read_from_network(newsockfd, buffer);
+            int n = read_from_network(newsockfd, buffer);
+            if (n == 0) {
+                cout << "Connection terminated..." << endl;
+                break;
+            }
         }
-        
+
+
     }
 
     close(sockfd);
