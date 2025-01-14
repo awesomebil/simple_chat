@@ -6,6 +6,14 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <string.h>
+#include <poll.h>
+#include <err.h>
+
+// Macros
+#define POLLSTD_IN 0
+#define POLLSTD_OUT 1
+#define NETFD_IN 2
+#define NETFD_OUT 3
 
 using namespace std;
 
@@ -47,8 +55,29 @@ class message_server {
 // 3. Initiate a listen call in order to receive responses.
 // 4. Accept a connection and exchange data.
 
+void read_from_network(int newsockfd, char* buffer) {
+    int n = read(newsockfd, buffer, 255); // 4.
+
+    cout << buffer << endl;
+
+    cout << endl << endl << "***DEBUG DATA***" << endl;
+
+    cout << "Number of bytes read: " << n << endl;
+
+    cout << "Message content: \t" << buffer << endl << endl;
+}
+
+void write_to_network(int newsockfd, char* buffer) {
+    int n = write(newsockfd, buffer, 255);
+
+    cout << endl << endl << "***DEBUG DATA***" << endl;
+
+    cout << "Number of bytes written to socket: " << n << endl;
+
+    cout << "Message content sent over network: \t" << buffer << endl << endl;
+}
+
 int main(int argc, char* argv[]) {
-    
     
     int sockfd = socket(AF_INET6, SOCK_STREAM, 0); // Returns file descriptor, 1.
     int port = stoi(argv[1]);
@@ -77,23 +106,71 @@ int main(int argc, char* argv[]) {
         cerr << "bind failed..." << endl;
         cerr << "Error: " << strerror(errno) << endl;
         cerr << "Bind address: " << argv[2] << " on port: " << argv[1] << endl; 
+    } else {
+        cout << "Binding successufl..." << endl;
     }
+
 
     if(listen(sockfd, 5) < 0) { // 3.
         cerr << "Listen call failed, errno below: " << endl;
         cerr << strerror(errno) << endl;
+    } else {
+        cout << "Server listening for connections..." << endl;
     }
 
     client_len = sizeof(client_addr);
     int newsockfd = accept(sockfd, (struct sockaddr*) &client_addr, &client_len); // 4.
 
-    int n = read(newsockfd, buffer, 255); // 4.
+    cout << "Client connected starting chat session." << endl;
 
-    cout << "Number of bytes read: " << n << endl;
+    // Poll for input/output in a loop
 
-    cout << "Client: " << buffer << endl;
+    struct pollfd fds[4];
+    int poll_ret;
+    int poll_timeout = 500;
+    
+    fds[POLLSTD_IN].fd = STDIN_FILENO;
+    fds[POLLSTD_IN].events = POLLIN;
 
-    cout << "Received a message from the client terminating connection now..." << endl;
+    fds[POLLSTD_OUT].fd = STDOUT_FILENO;
+    fds[POLLSTD_OUT].events = POLLOUT;
+
+    fds[NETFD_IN].fd = newsockfd;
+    fds[NETFD_IN].events = POLLIN;
+
+    fds[NETFD_OUT].fd = newsockfd;
+    fds[NETFD_OUT].events = POLLOUT;
+
+    while(1) {
+        if (fds[POLLSTD_IN].fd == -1 || fds[NETFD_IN].fd == -1)
+        {
+            cout << endl << "Connection terminated communications completed." << endl;
+            break;
+        }
+
+        poll_ret = poll(fds, 4, poll_timeout);
+
+        if(poll_ret == -1) {
+            err(1, "polling error");
+        }
+
+        for(int i = 0; i < 4; ++i) {
+            if (fds[i].revents & (POLLERR | POLLNVAL | POLLHUP))
+            {
+                fds[i].fd = -1;
+            } 
+        }
+
+        if(fds[POLLSTD_IN].revents & POLLIN) {
+            fgets(buffer, 256, stdin);
+            write_to_network(newsockfd, buffer);
+        }
+
+        if(fds[NETFD_IN].revents & POLLIN) {
+            read_from_network(newsockfd, buffer);
+        }
+        
+    }
 
     close(sockfd);
     close(newsockfd);
