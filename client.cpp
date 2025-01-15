@@ -86,10 +86,10 @@ int main(int argc, char* argv[]) {
     fds[POLLSTD_OUT].events = POLLOUT;
 
     fds[NETFD_IN].fd = sockfd;
-    fds[NETFD_IN].events = POLLIN | POLLHUP;
+    fds[NETFD_IN].events = POLLIN;
 
     fds[NETFD_OUT].fd = sockfd;
-    fds[NETFD_OUT].events = POLLOUT | POLLHUP;
+    fds[NETFD_OUT].events = POLLOUT;
 
     while(1) {
         if (fds[POLLSTD_IN].fd == -1 || fds[NETFD_IN].fd == -1)
