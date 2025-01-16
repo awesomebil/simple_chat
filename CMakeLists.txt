@@ -23,6 +23,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(simple_chat
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+
+        client.cpp message_server.cpp message_server.h server.cpp
+        connect_session.h connect_session.cpp connect_session.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_chat APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
