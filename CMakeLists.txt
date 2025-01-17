@@ -24,7 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
 
-        client.cpp message_server.cpp message_server.h server.cpp
+        message_server.cpp message_server.h
         connect_session.h connect_session.cpp connect_session.ui
     )
 # Define target properties for Android with Qt 6 as:

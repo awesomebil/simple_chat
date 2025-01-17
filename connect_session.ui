@@ -23,6 +23,16 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="ip_lbl">
+      <property name="text">
+       <string>IP Address</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="ip_txt"/>
+    </item>
     <item row="2" column="0">
      <widget class="QLabel" name="port_lbl">
       <property name="text">
@@ -32,16 +42,6 @@
     </item>
     <item row="2" column="1">
      <widget class="QLineEdit" name="port_txt"/>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="ip_txt"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="ip_lbl">
-      <property name="text">
-       <string>IP Address</string>
-      </property>
-     </widget>
     </item>
     <item row="0" column="2">
      <widget class="QPushButton" name="ok_btn">
@@ -55,6 +55,20 @@
       <property name="text">
        <string>Cancel</string>
       </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QComboBox" name="role_selector">
+      <item>
+       <property name="text">
+        <string>Server</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Client</string>
+       </property>
+      </item>
      </widget>
     </item>
    </layout>
