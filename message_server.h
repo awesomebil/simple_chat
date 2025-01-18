@@ -44,8 +44,8 @@ private:
     char* address;
     int port, server_sockfd, client_sockfd;
     char msg_buffer[256];
-    sockaddr_in6 ipv6_bind_address, ipv6_client_address;
-    sockaddr_in ipv4_bind_address, ipv4_client_address;
+    struct sockaddr_in6 ipv6_bind_address, ipv6_client_address;
+    struct sockaddr_in ipv4_bind_address, ipv4_client_address;
     struct pollfd fds[2];
     bool is_client, inet6;
     socklen_t client_len;

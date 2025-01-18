@@ -1,12 +1,9 @@
 #include "message_server.h"
 
 message_server::message_server() {
-    this->address = (char*)"::1";
-    this->port = htons(8080);
 
-    ipv6_bind_address.sin6_port = this->port;
-    ipv6_bind_address.sin6_family = AF_INET6;
-    inet_pton(AF_INET6, address, &ipv6_bind_address.sin6_addr);
+    set_address((char*) "::1");
+    set_port(8080);
 
     bzero(msg_buffer, 256);
     socket_notifier = nullptr;
@@ -14,17 +11,14 @@ message_server::message_server() {
 
 message_server::message_server(char* address, int port) {
 
-    this->address = address;
-    this->port = htons(port);
-
-    ipv6_bind_address.sin6_port = this->port;
-    ipv6_bind_address.sin6_family = AF_INET6;
-    inet_pton(AF_INET6, address, &ipv6_bind_address.sin6_addr);
+    set_address(address);
+    set_port(port);
 
     bzero(msg_buffer, 256);
     socket_notifier = nullptr;
 
 }
+
 
 void message_server::setup_server() {
 
@@ -87,10 +81,15 @@ void message_server::start_chat_session(int sockfd) {
 
 void message_server::set_address(char* addr) {
     this->address = addr;
+
+    ipv6_bind_address.sin6_family = AF_INET6;
+    inet_pton(AF_INET6, address, &ipv6_bind_address.sin6_addr);
 }
 
 void message_server::set_port(int p) {
     this->port = p;
+
+    ipv6_bind_address.sin6_port = htons(this->port);
 }
 
 void message_server::send_data_to_network(const char* buf) {
