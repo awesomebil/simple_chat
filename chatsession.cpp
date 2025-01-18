@@ -30,6 +30,8 @@ void chatSession::on_sendButton_clicked()
     QByteArray ba = this->ui->send_txt->toPlainText().toUtf8();
     send_msg = ba.data();
     msg->send_data_to_network(send_msg);
+    ui->msg_thread_txt->append("Sent: " + ui->send_txt->toPlainText());
+    ui->send_txt->clear();
 }
 
 message_server* chatSession::get_msg() {
@@ -46,5 +48,5 @@ connect_session* chatSession::get_connect_session_dialog() {
 }
 
 void chatSession::display_message(const QString &message) {
-    ui->msg_thread_txt->append(message);
+    ui->msg_thread_txt->append("Received: " + message);
 }

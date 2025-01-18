@@ -1,6 +1,5 @@
 #include "chatsession.h"
 #include "message_server.h"
-#include <thread>
 
 #include <QApplication>
 

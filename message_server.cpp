@@ -94,6 +94,7 @@ void message_server::set_port(int p) {
 }
 
 void message_server::send_data_to_network(const char* buf) {
+
     int n = write(client_sockfd, buf, 255);
 
     cout << endl << endl << "***DEBUG DATA***" << endl;
@@ -114,7 +115,13 @@ void message_server::read_data_from_network() {
 
     cout << "Message content: \t" << msg_buffer << endl << endl;
 
-    emit message_received(QString::fromUtf8(msg_buffer, n));
+    if (n == 0) {
+        socket_notifier->setEnabled(false);
+        bzero(msg_buffer, 256);
+        memcpy(msg_buffer, "Peer disconnected...", strlen("Peer disconnected..."));
+    }
+
+    emit message_received(QString::fromUtf8(msg_buffer, strlen(msg_buffer)));
 }
 
 message_server::~message_server() {

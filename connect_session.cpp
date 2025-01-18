@@ -15,6 +15,7 @@ connect_session::~connect_session()
 
 void connect_session::on_ok_btn_clicked()
 {
+
     char* msg_text = this->ui->ip_txt->text().toUtf8().data();
     msg->set_address(msg_text);
 
