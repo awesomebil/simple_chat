@@ -16,7 +16,8 @@ connect_session::~connect_session()
 void connect_session::on_ok_btn_clicked()
 {
 
-    char* msg_text = this->ui->ip_txt->text().toUtf8().data();
+    QByteArray ba = this->ui->ip_txt->text().toUtf8();
+    char* msg_text = ba.data();
     msg->set_address(msg_text);
 
     int port_num = this->ui->port_txt->text().toInt();

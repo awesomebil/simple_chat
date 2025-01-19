@@ -43,6 +43,9 @@ void message_server::setup_server() {
         cerr << strerror(errno) << endl;
     } else {
         cout << "Server listening for connections..." << endl;
+        char buf[256];
+        cout << "Address: " << inet_ntop(AF_INET6, &ipv6_bind_address.sin6_addr, buf, sizeof(buf))
+             << " port " << ntohs(ipv6_bind_address.sin6_port) << endl;
     }
 
     client_len = sizeof(ipv6_client_address);
@@ -67,8 +70,13 @@ void message_server::setup_client() {
     {
         cerr << "Error connecting to server..." << endl;
         cerr << "Error no: " << strerror(errno) << endl;
+        cerr << "Server address: " << inet_ntop(AF_INET6, &ipv6_bind_address.sin6_addr, address, sizeof(address))
+             << " and port: " << ntohl(ipv6_bind_address.sin6_port) << endl;
     } else {
         cout << "Connection successful chat session opened!" << endl;
+        char buf[256];
+        cout << "Address: " << inet_ntop(AF_INET6, &ipv6_bind_address.sin6_addr, buf, sizeof(buf))
+             << " port " << ntohs(ipv6_bind_address.sin6_port) << endl;
     }
 
     start_chat_session(client_sockfd);
