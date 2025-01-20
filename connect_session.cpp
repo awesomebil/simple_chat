@@ -10,6 +10,7 @@ connect_session::connect_session(QWidget *parent)
 
 connect_session::~connect_session()
 {
+    delete msg;
     delete ui;
 }
 

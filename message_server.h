@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iostream>
-#include <thread>
+#include <QThread>
 #include <poll.h>
 #include <err.h>
 
@@ -51,6 +51,8 @@ private:
     socklen_t client_len;
 
     QSocketNotifier *socket_notifier;
+    QThread workerThread;
+    void server_accept();
 
 signals:
     void message_received(const QString&);

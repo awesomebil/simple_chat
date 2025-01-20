@@ -22,6 +22,8 @@ message_server::message_server(char* address, int port) {
 
 void message_server::setup_server() {
 
+    moveToThread(&workerThread);
+
     server_sockfd = socket(AF_INET6, SOCK_STREAM, 0);
 
     if (server_sockfd < 0) {
@@ -48,13 +50,23 @@ void message_server::setup_server() {
              << " port " << ntohs(ipv6_bind_address.sin6_port) << endl;
     }
 
+
+    connect(&workerThread, &QThread::started, this, &message_server::server_accept);
+    workerThread.start();
+}
+
+void message_server::server_accept() {
     client_len = sizeof(ipv6_client_address);
     client_sockfd = accept(server_sockfd, (struct sockaddr*) &ipv6_client_address, &client_len); // 4.
+
+    if(client_sockfd == -1) {
+        cout << "No client connected or error..." << endl;
+        return;
+    }
 
     cout << "Client connected starting chat session." << endl;
 
     start_chat_session(client_sockfd);
-
 }
 
 void message_server::setup_client() {
@@ -70,8 +82,9 @@ void message_server::setup_client() {
     {
         cerr << "Error connecting to server..." << endl;
         cerr << "Error no: " << strerror(errno) << endl;
-        cerr << "Server address: " << inet_ntop(AF_INET6, &ipv6_bind_address.sin6_addr, address, sizeof(address))
-             << " and port: " << ntohl(ipv6_bind_address.sin6_port) << endl;
+        char buf [256];
+        cerr << "Server address: " << inet_ntop(AF_INET6, &ipv6_bind_address.sin6_addr, buf, sizeof(buf))
+             << " and port: " << ntohs(ipv6_bind_address.sin6_port) << endl;
     } else {
         cout << "Connection successful chat session opened!" << endl;
         char buf[256];
@@ -126,6 +139,7 @@ void message_server::read_data_from_network() {
         socket_notifier->setEnabled(false);
         bzero(msg_buffer, 256);
         memcpy(msg_buffer, "Peer disconnected...", strlen("Peer disconnected..."));
+        return;
     }
 
     emit message_received(QString::fromUtf8(msg_buffer, strlen(msg_buffer)));
@@ -134,5 +148,7 @@ void message_server::read_data_from_network() {
 message_server::~message_server() {
     close(server_sockfd);
     close(client_sockfd);
+    workerThread.quit();
+    workerThread.wait();
     delete socket_notifier;
 }
