@@ -1,9 +1,0 @@
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/simple_chat.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/edit_cache.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/rebuild_cache.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/list_install_components.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/install.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/install/local.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/install/strip.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/simple_chat_autogen_timestamp_deps.dir
-/home/belol/repos/simple_chat/build/Desktop-Debug/CMakeFiles/simple_chat_autogen.dir
