@@ -26,6 +26,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         message_server.cpp message_server.h
         connect_session.h connect_session.cpp connect_session.ui
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET simple_chat APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -72,3 +73,4 @@ install(TARGETS simple_chat
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(simple_chat)
 endif()
+add_subdirectory(tests/simple_chat_testing)

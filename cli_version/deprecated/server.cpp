@@ -26,7 +26,7 @@ class message_server {
     public:
         message_server(char* bind_address, int port) {
             server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-            port = port;
+            this->port = port;
 
             bzero(message_buffer, 256);
         }
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
     bind_address.sin6_family = AF_INET6;
 
 
-    if (bind(sockfd, (struct sockaddr*) &bind_address, sizeof(bind_address)) < 0) { // 2.
+    if (::bind(sockfd, (struct sockaddr*) &bind_address, sizeof(bind_address)) < 0) { // 2.
         cerr << "bind failed..." << endl;
         cerr << "Error: " << strerror(errno) << endl;
         cerr << "Bind address: " << argv[2] << " on port: " << argv[1] << endl; 
@@ -175,8 +175,6 @@ int main(int argc, char* argv[]) {
                 break;
             }
         }
-
-
     }
 
     close(sockfd);
